@@ -9,28 +9,18 @@ const AddMovieForm = (props) => {
     const { push } = useHistory();
 	const { id } = useParams();
 
-	const [movie, setMovie] = useState({
+	const [newMovie, setNewMovie] = useState({
+        id: '',
 		title:"",
 		director: "",
 		genre: "",
 		metascore: 0,
 		description: ""
 	});
-
-	useEffect(()=> {
-		axios.get(`http://localhost:5000/api/movies/${id}`)
-		.then(resp => {
-			setMovie(resp.data)
-			console.log('test')
-		})
-		.catch(err => {
-			console.error(err);
-		})
-	},[])
 	
 	const handleChange = (e) => {
-        setMovie({
-            ...movie,
+        setNewMovie({
+            ...newMovie,
             [e.target.name]: e.target.value
         });
     }
@@ -38,10 +28,10 @@ const AddMovieForm = (props) => {
     const handleSubmit = (e) => {
 		e.preventDefault();
 		axios
-			.put(`http://localhost:5000/api/movies/${id}`, movie)
+			.post(`http://localhost:5000/api/movies`, newMovie)
 			.then(resp => {
 				props.setMovies(resp.data)
-				push(`/movies/${id}`)
+				push(`/movies/`)
 			})
 			.catch(err => {
 				console.error(err);
@@ -49,14 +39,14 @@ const AddMovieForm = (props) => {
 
 	}
 	
-	const { title, director, genre, metascore, description } = movie;
+	const { title, director, genre, metascore, description } = newMovie;
 
     return (
         <div className="col">
             <div className="modal-content">
                 <form onSubmit={handleSubmit}>
                     <div className="modal-header">						
-                        <h4 className="modal-title">Editing <strong>{movie.title}</strong></h4>
+                        <h4 className="modal-title">New Movie</h4>
                     </div>
                     <div className="modal-body">					
                         <div className="form-group">
@@ -82,7 +72,7 @@ const AddMovieForm = (props) => {
                                         
                     </div>
                     <div className="modal-footer">			    
-                        <input type="submit" className="btn btn-info" value="Save"/>
+                        <input type="submit" className="btn btn-info" value="Add Movie"/>
                         <Link to={`/movies/1`}><input type="button" className="btn btn-default" value="Cancel"/></Link>
                     </div>
                 </form>
